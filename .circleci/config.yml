@@ -1,0 +1,116 @@
+version: 2
+
+main_only: &main_only
+  filters:
+    branches:
+      only: main 
+
+tagged_release: &tagged_release
+  filters:
+    tags:
+      only: /\d+(\.\d+)(\.\d+)/
+
+jobs:
+  build:
+    docker:
+      - image: golang:1.16-alpine
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-app-{{ checksum "go.sum" }}
+      - run:
+          name: Env Vars
+          command: env 
+      - run:
+          name: Download Dependancies
+          command: go mod download
+      - save_cache:
+          key: v1-app-{{ checksum "go.sum" }}
+          paths: 
+            - "/go/pkg/mod"
+      - run:
+          name: Build
+          command: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o demo-http  *.go
+      - persist_to_workspace:
+          root: /root/
+          paths:
+            - project
+
+  test:
+    docker:
+      - image: golang:1.16-alpine
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-app-{{ checksum "go.sum" }}
+      - run:
+          name: Run Tests
+          command: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -v ./...
+
+  publish:
+    docker:
+      - image: docker:stable
+    environment:
+      IMAGE: undeadops/demo-http
+      
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: /root
+      - store_artifacts:
+          path: ./demo-http
+          destination: demo-http.main
+      - run:
+          name: Log in to docker hub
+          command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD"
+      - run:
+          name: Build Docker Container
+          command: |
+            TAG=${CIRCLE_SHA1:0:7}
+            docker build -f Dockerfile -t $IMAGE:$TAG .
+      - run:
+          name: Push to Docker Hub
+          command: |
+            TAG=${CIRCLE_SHA1:0:7}
+            docker push $IMAGE:$TAG
+
+  publish_tag:
+    docker:
+      - image: docker:stable
+    environment:
+      IMAGE: undeadops/demo-http
+    steps:
+      - setup_remote_docker
+      - attach_workspace:
+          at: /root
+      - run:
+          name: pwd
+          command: echo $PWD && ls -la 
+      - store_artifacts:
+          path: ./demo-http
+          destination: demo-http.$CIRCLE_TAG
+      - run:
+          name: Log in to docker hub
+          command: docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+      - run:
+          name: Build Docker Container
+          command: |
+            TAG=${CIRCLE_SHA1:0:7}
+            docker build -f Dockerfile -t $IMAGE:$TAG .
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - publish:
+          <<: *main_only
+          requires:
+            - test
+      # - publish_tag:
+      #     <<: *tagged_release
+      #     requires:
+      #       - test
