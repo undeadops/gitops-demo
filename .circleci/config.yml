@@ -52,8 +52,8 @@ jobs:
       - image: docker:stable
     environment:
       IMAGE: undeadops/demo-http
-      TS: `date +%F.%H%M%S`
-      TAG: ${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${TS}`
+      TS: ""
+      TAG: "unset" 
     steps:
       - setup_remote_docker
       - attach_workspace:
@@ -64,6 +64,11 @@ jobs:
       - run:
           name: Log in to docker hub
           command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD"
+      - run:
+          name: Set tag
+          command:
+            TS=`date +%F.%H%M%S`
+            TAG=${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${TS}
       - run:
           name: Build Docker Container
           command: |
