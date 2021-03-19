@@ -66,7 +66,8 @@ jobs:
       - run:
           name: Build Docker Container
           command: |
-            TAG=${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${date +%F.%H%M%S}
+            TS=(date +%F.%H%M%S)
+            TAG=${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${TS}
             docker build -f Dockerfile -t $IMAGE:$TAG .
       - run:
           name: Push to Docker Hub
