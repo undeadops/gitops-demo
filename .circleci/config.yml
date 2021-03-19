@@ -64,7 +64,7 @@ jobs:
           command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD"
       - run:
           name: Build and Push Docker Container 
-          command:
+          command: |
             TS=`date +%F.%H%M%S`
             TAG=${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${TS}
             docker build -f Dockerfile -t $IMAGE:$TAG .
