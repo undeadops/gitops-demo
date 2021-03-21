@@ -61,7 +61,7 @@ jobs:
           destination: demo-http.main
       - run:
           name: Log in to docker hub
-          command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD"
+          command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD" quay.io
       - run:
           name: Build and Push Docker Container 
           command: |
