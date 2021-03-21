@@ -115,7 +115,7 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 	}
 
 	m := message{
-		Message: "Hello, World!",
+		Message: "Hello, New World!",
 		Version: Version,
 	}
 	requestDump, err := httputil.DumpRequest(req, true)
