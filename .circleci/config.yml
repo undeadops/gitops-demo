@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-app-{{ checksum "go.sum" }}
+          key: v1-app-{{ checksum "go.mod" }}
       - run:
           name: Env Vars
           command: env 
@@ -25,7 +25,7 @@ jobs:
           name: Download Dependancies
           command: go mod download
       - save_cache:
-          key: v1-app-{{ checksum "go.sum" }}
+          key: v1-app-{{ checksum "go.mod" }}
           paths: 
             - "/go/pkg/mod"
       - run:
@@ -42,7 +42,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-app-{{ checksum "go.sum" }}
+          key: v1-app-{{ checksum "go.mod" }}
       - run:
           name: Run Tests
           command: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go test -v ./...
