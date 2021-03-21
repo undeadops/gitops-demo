@@ -18,6 +18,9 @@ import (
 type middleware func(http.Handler) http.Handler
 type middlewares []middleware
 
+// Version will be set by CircleCI based on a git tag and the commit hash
+var Version = "dev"
+
 func (mws middlewares) apply(hdlr http.Handler) http.Handler {
 	if len(mws) == 0 {
 		return hdlr
@@ -113,7 +116,7 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 
 	m := message{
 		Message: "Hello, World!",
-		Version: 1.1,
+		Version: Version,
 	}
 	requestDump, err := httputil.DumpRequest(req, true)
 	if err != nil {

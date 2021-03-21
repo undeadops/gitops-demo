@@ -30,7 +30,7 @@ jobs:
             - "/go/pkg/mod"
       - run:
           name: Build
-          command: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o demo-http  *.go
+          command: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=${CIRCLE_SHA1::8}" -o demo-http  *.go
       - persist_to_workspace:
           root: /root/
           paths:
@@ -67,7 +67,7 @@ jobs:
           command: |
             TS=`date +%F.%H%M%S`
             TAG=${CIRCLE_BRANCH}-${CIRCLE_SHA1::8}-${TS}
-            docker build -f Dockerfile -t $IMAGE:$TAG .
+            docker build --build-arg VERSION=${CIRCLE_SHA1::8} -f Dockerfile -t $IMAGE:$TAG .
             docker push $IMAGE:$TAG
 
 workflows:
