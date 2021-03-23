@@ -67,7 +67,7 @@ jobs:
           command: |
             TS=`date +%F.%H%M%S`
             #TAG=${CIRCLE_BRANCH}-${TS}-${CIRCLE_SHA1::8}
-            TAG=${CIRCLE_SHA1::8}
+            TAG=${CIRCLE_PIPELINE_ID}-${CIRCLE_SHA1::8}
             docker build --build-arg VERSION=${CIRCLE_SHA1::8} -f Dockerfile -t $IMAGE:$TAG .
             docker push $IMAGE:$TAG
 
