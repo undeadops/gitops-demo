@@ -116,7 +116,9 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 
 	blah := ` 
 	This is going to be a longer message, because I'm an idiot and did not
-	update my port in all the places I should have
+	update my port in all the places I should have.
+
+	I'm very much a der in this whole thing...
     `
 
 	m := message{
