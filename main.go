@@ -121,6 +121,8 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 	I'm very much a der in this whole thing...
 
 	forgot an env var for things
+
+	I've now created the kafka topic this should use...
     `
 
 	m := message{
