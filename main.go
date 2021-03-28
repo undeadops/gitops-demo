@@ -115,7 +115,7 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 	}
 
 	m := message{
-		Message: "Hello, New World!",
+		Message: "Hello, New World!, Adding webhooks for things like Dapr",
 		Version: Version,
 	}
 	requestDump, err := httputil.DumpRequest(req, true)
