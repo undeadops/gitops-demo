@@ -114,8 +114,13 @@ func (c *controller) index(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	blah := ` 
+	This is going to be a longer message, because I'm an idiot and did not
+	update my port in all the places I should have
+    `
+
 	m := message{
-		Message: "Hello, New World!, Adding webhooks for things like Dapr",
+		Message: blah,
 		Version: Version,
 	}
 	requestDump, err := httputil.DumpRequest(req, true)
