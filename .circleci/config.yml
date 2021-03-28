@@ -51,7 +51,8 @@ jobs:
     docker:
       - image: docker:stable
     environment:
-      IMAGE: quay.io/undeadops/demo-http
+      #IMAGE: quay.io/undeadops/demo-http
+      IMAGE: undeadops/demo-http
     steps:
       - setup_remote_docker
       - attach_workspace:
@@ -61,7 +62,8 @@ jobs:
           destination: demo-http.main
       - run:
           name: Log in to docker hub
-          command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD" quay.io
+          #command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD" quay.io
+          command: docker login -u $REGISTRY_USER --password "$REGISTRY_PASSWORD" 
       - run:
           name: Build and Push Docker Container 
           command: |
